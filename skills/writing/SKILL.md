@@ -1,5 +1,5 @@
 ---
-name: coach-me-writing
+name: writing
 description: Mark up and correct English writing the way a teacher does with a red pen, showing the errors directly inside the text. Use this skill whenever the user sends English text (a sentence, paragraph, or essay) and asks to fix, correct, proofread, or check grammar or spelling, or says things like "check my writing", "is this correct?", "mark my essay", "fix my English", in any language the user writes their request in, even if they don't mention a visual format. Also use when the user wants to practice finding errors or asks for an exercise paragraph with mistakes.
 ---
 

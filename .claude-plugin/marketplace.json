@@ -1,0 +1,22 @@
+{
+  "name": "coach-me",
+  "owner": {
+    "name": "Quan Do",
+    "url": "https://github.com/quando1910"
+  },
+  "description": "Claude skills for learning English, as an installable Claude Code plugin.",
+  "plugins": [
+    {
+      "name": "coach-me",
+      "source": "./",
+      "description": "Claude skills for learning English: teacher-style writing correction, with more skills to come.",
+      "category": "learning",
+      "keywords": [
+        "english",
+        "language-learning",
+        "writing",
+        "proofreading"
+      ]
+    }
+  ]
+}

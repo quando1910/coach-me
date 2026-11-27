@@ -1,0 +1,17 @@
+{
+  "name": "coach-me",
+  "description": "Claude skills for learning English: teacher-style writing correction, with more skills to come.",
+  "author": {
+    "name": "Quan Do",
+    "url": "https://github.com/quando1910"
+  },
+  "homepage": "https://github.com/quando1910/coach-me",
+  "repository": "https://github.com/quando1910/coach-me",
+  "keywords": [
+    "english",
+    "language-learning",
+    "writing",
+    "proofreading",
+    "skills"
+  ]
+}
