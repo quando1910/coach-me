@@ -7,6 +7,7 @@ Claude skills for learning English. Small and focused: each skill does one thing
 | Skill | Command | What it does |
 |---|---|---|
 | [`coach-writing`](./skills/coach-writing) | `/coach-writing` | Corrects your English writing like a teacher with a red pen: wrong words are struck through with the fix written above, missing words get a ∧ caret, unclear sentences are crossed out and rewritten. Optional blue suggestions upgrade basic vocabulary, sentence structure, and cohesion. Includes a button to copy the clean version. |
+| [`coach-writing-ielts`](./skills/coach-writing-ielts) | `/coach-writing-ielts` | Corrects an IELTS Writing essay like an IELTS teacher: besides grammar, it replaces everyday words with academic ones, rewrites awkward phrases, and crosses out examples that overlap or don't follow logically. Ends with a band estimate for each of the four IELTS criteria. |
 
 More skills may be added over time. Each one lives in its own folder under `skills/` with its own `SKILL.md`.
 
