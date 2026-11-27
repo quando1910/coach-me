@@ -21,3 +21,7 @@ Once installed, send Claude your IELTS essay and ask it to check or correct it, 
 You can write the request in your own language. Claude replies in that language and keeps the corrected essay in English.
 
 The band is an estimate, not an official score.
+
+## Requires coach-writing
+
+This skill uses the correction widget stored in [`../coach-writing/reference/widget.md`](../coach-writing/reference/widget.md). Installing the `coach-me` plugin gives you both. If you install skills by hand, keep the `coach-writing` folder next to this one; without it, corrections are shown as plain markdown instead of the widget.

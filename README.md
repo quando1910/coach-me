@@ -24,10 +24,10 @@ This installs every skill in the repo. Skills only run when you call them or whe
 
 ### Claude app (single skill)
 
-1. Download the folder of the skill you want (for example `skills/coach-writing/`), or just its `SKILL.md`.
+1. Download the whole folder of the skill you want (for example `skills/coach-writing/`), including its `reference/` folder. `coach-writing-ielts` uses the widget in `skills/coach-writing/reference/`, so download both folders and keep them side by side.
 2. Add it to Claude as a custom skill. Installation steps can change, so check Anthropic's current documentation on adding custom skills.
 
-You don't need the rest of the repo.
+You don't need the rest of the repo. Without `coach-writing` next to it, `coach-writing-ielts` still works but shows corrections as plain markdown instead of the widget.
 
 ## License
 

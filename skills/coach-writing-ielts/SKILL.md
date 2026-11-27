@@ -20,7 +20,7 @@ Use `coach-writing` instead for everyday text (emails, messages, posts). There, 
    - If the text is only part of an essay (for example an introduction and one body paragraph), correct what is there and don't penalise length or a missing conclusion.
 2. **Find what to fix**, in the five groups below. Always keep the writer's position and argument.
 3. **Mark up** with the symbols table.
-4. **Display** with the inline HTML widget (template at the end). If no display tool is available, use the markdown fallback.
+4. **Display** with the inline HTML widget (see "Widget" below). If no display tool is available, use the markdown fallback.
 5. **Below the widget**, write the band estimate and a short note (see "Below the widget").
 
 ## What to fix
@@ -119,87 +119,24 @@ Write these in the user's language, in this order. Keep it short and don't repea
 - Reread the essay once before displaying, so no error is missed.
 - Don't give the corrections as a table unless the user asks.
 
-## Widget template (inline HTML)
+## Widget
 
-Use the host's CSS variables so it works in dark mode (`--text-danger`, `--text-accent`, `--text-secondary`, `--bg-neutral`). Keep the positioning values below exactly as they are; they were tuned after several rounds of misalignment.
+This skill shares its widget with `coach-writing`. Read [`../coach-writing/reference/widget.md`](../coach-writing/reference/widget.md) (relative to this skill's folder) before building the widget. It holds the HTML template, the markup for each kind of mark, and the technical notes. Use it as written; don't rebuild the styles from memory.
+
+If that file can't be read, the `coach-writing` skill is not installed next to this one. Use the markdown fallback below and tell the user to install both skill folders.
+
+Legend entries for this skill:
 
 ```html
-<h2 class="sr-only">IELTS essay corrected in teacher style.</h2>
-<style>
-.pg{line-height:2.7;font-size:17px;margin:0;padding:24px 0 0}
-.fx{position:relative;display:inline-block;line-height:1.3;text-decoration:line-through;text-decoration-color:var(--text-danger);text-decoration-thickness:1.5px}
-.fx b,.ins b,.up b{position:absolute;left:50%;transform:translateX(-50%);bottom:100%;line-height:1;margin-bottom:1px;color:var(--text-danger);font-weight:500;font-style:italic;white-space:nowrap;text-decoration:none;font-size:16px}
-.ins{position:relative;display:inline-block;line-height:1.3;width:1.5em;height:1em;vertical-align:baseline}
-.ins svg{position:absolute;left:50%;transform:translateX(-50%);bottom:-7px;width:14px;height:10px;color:var(--text-danger)}
-.rw{display:inline-block;vertical-align:top;line-height:1.6;margin-top:6px}
-.rw i{display:block;color:var(--text-danger);font-weight:500;font-style:italic}
-.rw s{display:block;text-decoration-color:var(--text-danger);text-decoration-thickness:1.5px}
-.up{position:relative;display:inline-block;line-height:1.3;text-decoration:underline dotted var(--text-accent);text-underline-offset:3px}
-.up b{color:var(--text-accent);text-decoration:none}
-.ins.u b,.ins.u svg,.rw.u i{color:var(--text-accent)}
-.rw.u s{text-decoration:underline dotted var(--text-accent);text-underline-offset:3px}
-.lg u{text-decoration:underline dotted var(--text-accent);text-underline-offset:3px}
-.lg b.u{color:var(--text-accent)}
-.lg{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:13px;color:var(--text-secondary);padding:10px 14px;background:var(--bg-neutral);border-radius:var(--radius);margin:0 0 1rem}
-.lg b{color:var(--text-danger);font-weight:500;font-style:italic}
-.lg s{text-decoration-color:var(--text-danger)}
-.cp{margin-top:8px;font-size:13px;display:inline-flex;align-items:center;gap:6px}
-</style>
-
-<div class="lg">
 <span><s>word</s> <b>better word</b> : replace</span>
 <span><s>word</s> alone : remove</span>
 <span><b>word</b> above ∧ : missing word</span>
 <span><s>phrase</s> → <b>new phrase</b> : rewrite</span>
 <span><b>a / b</b> : either works</span>
 <span><u>word</u> <b class="u">option</b> : optional</span>
-</div>
-
-<p class="pg">
-<span class="fx">The</span> large economic disparities can cause<span class="ins"><b>the poor</b><svg viewBox="0 0 14 10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M1 9 L7 1.5 L13 9"/></svg></span>to struggle to access education and better <span class="fx">careers<b>employment opportunities</b></span>. This can lead to social issues such as <span class="fx">theft,</span> illegal activities and
-<span class="rw"><i>social resentment and class tensions.</i><s>increased poverty rates.</s></span>
-<span class="rw"><i>If governments fail to redistribute resources through taxation,</i><s>Without the governments capable of redistributing resources through taxes,</s></span>
-social stability will be undermined.
-</p>
-<button class="cp" data-t="CLEAN PARAGRAPH HERE"><i class="ti ti-copy" aria-hidden="true"></i><span>Copy corrected paragraph</span></button>
-
-<div style="margin-top:1rem">
-<button class="cp" data-all="1"><i class="ti ti-copy" aria-hidden="true"></i><span>Copy whole corrected essay</span></button>
-</div>
-
-<script>
-document.querySelectorAll('.cp').forEach(function(btn){
-  var label=btn.querySelector('span');
-  var orig=label.textContent;
-  btn.addEventListener('click',function(){
-    var t=btn.getAttribute('data-t');
-    if(btn.getAttribute('data-all')){
-      t=Array.prototype.map.call(document.querySelectorAll('.cp[data-t]'),function(b){return b.getAttribute('data-t')}).join('\n\n');
-    }
-    function done(){label.textContent='Copied';setTimeout(function(){label.textContent=orig},1500)}
-    function fallback(){
-      var ta=document.createElement('textarea');ta.value=t;ta.style.position='absolute';ta.style.left='-9999px';
-      document.body.appendChild(ta);ta.select();
-      try{document.execCommand('copy');done()}catch(e){label.textContent='Could not copy'}
-      document.body.removeChild(ta);
-    }
-    if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(done,fallback)}else{fallback()}
-  });
-});
-</script>
 ```
 
-Translate the legend text, the `<h2>` summary, and the button labels ("Copy corrected paragraph", "Copy whole corrected essay", "Copied", "Could not copy") into the user's language. Omit the whole-essay button when there is only one paragraph.
-
-### Technical notes (bugs already hit)
-
-- Position the correction with `bottom:100%` of `.fx`, and `.fx` must have `line-height:1.3`. If `.fx` inherits the paragraph's large line-height, the correction floats too high.
-- Don't position the correction text with `em` inside a `<b>` that has its own `font-size`: `em` is relative to its own size, so it ends up misplaced.
-- Draw the ∧ as a small SVG (14x10) sitting under the gap between two words. The word to insert sits at the same height as the other corrections.
-- The paragraph needs about 24px of `padding-top` and a `line-height` of about 2.7 so corrections on one line don't collide with the line above.
-- A correction above a word is `white-space:nowrap` and centred, so a long one overlaps the words beside it. Use the `.rw` rewrite form for anything long (see "Symbols").
-- The copy button uses `navigator.clipboard` with an `execCommand('copy')` fallback, because the widget runs in an iframe. If both fail, give the clean version as plain text so the user can select and copy it themselves.
-- Escape `<`, `>`, `&`, and quotes in the user's text properly, especially inside the `data-t` attribute.
+Summary for the `<h2>`: "IELTS essay corrected in teacher style." Copy button labels: "Copy corrected paragraph" for a paragraph, "Copy whole corrected essay" for the whole essay.
 
 ## Markdown fallback (no widget)
 
