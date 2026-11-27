@@ -7,7 +7,7 @@ An interactive 3D cube for the inline HTML widget tool. Show it exactly as writt
 - **Cube:** drag on a sticker to turn that layer; drag outside the cube to change the view.
 - **Move pad:** 18 buttons (U D L R F B M E S and their inverses), coloured by face.
 - **General:** Scramble (20 random face turns), Reset, and a Solved / Not solved status.
-- **CFOP:** Cross, F2L, OLL, PLL load a sample case: the cube jumps to the state where that stage starts, and the stage's algorithm is placed in the input. Play runs it; Step runs one move at a time.
+- **CFOP:** Cross, F2L, OLL show what each stage achieves: the cube jumps to the state right after that stage is done (Cross: white cross with matching side edges, viewed from below; F2L: first two layers; OLL: yellow top). There is no PLL button, because the state after PLL is simply the solved cube. The stage's sample algorithm is placed in the input; Play or Step first rewinds the cube to the start of that stage, then plays the algorithm so the learner sees the stage form.
 - **Ask coach** (at the end of the CFOP row) sends this message to the chat:
 
   ```
@@ -29,7 +29,7 @@ To add another method later, add a row like the CFOP row with its own sample-cas
 ## Widget code
 
 ```html
-<h2 class="sr-only">3D Rubik's cube with four CFOP sample cases (Cross, F2L, OLL, PLL): click a case to load the state where that stage starts, drag a layer to turn it, a button pad for single moves, a move history, and an Ask coach button per method that sends the current cube state to the chat as a Kociemba facelet string.</h2>
+<h2 class="sr-only">3D Rubik's cube with three CFOP sample cases (Cross, F2L, OLL): click a case to show the cube right after that stage is done, drag a layer to turn it, a button pad for single moves, a move history, and an Ask coach button per method that sends the current cube state to the chat as a Kociemba facelet string.</h2>
 <style>
 .rb-top{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin:0 0 4px}
 .rb-scene{flex:1;min-width:300px;height:360px;perspective:900px;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:grab;user-select:none}
@@ -69,7 +69,6 @@ To add another method later, add a row like the CFOP row with its own sample-cas
 <button class="rb-stage" data-stage="0">Cross</button>
 <button class="rb-stage" data-stage="1">F2L</button>
 <button class="rb-stage" data-stage="2">OLL</button>
-<button class="rb-stage" data-stage="3">PLL</button>
 <button class="rb-ask" data-method="CFOP">Ask coach</button>
 </div>
 
@@ -104,12 +103,12 @@ var DEF={U:[1,-1,-1],D:[1,1,1],R:[0,1,1],L:[0,-1,-1],F:[2,1,1],B:[2,-1,-1],M:[0,
 var PAD=["S","F'","F","S'","U'","U","E'","R'","R","E","B'","B","M'","L'","L","M","D'","D"];
 var NAMES=['Cross','F2L','OLL','PLL'];
 var STAGES=["F' R D' L F2 D B'","U R U' R' y' R U R' y' U' R U2 R' y' U R U R' y'","R U R' U R U2 R'","R U R' U' R' F R2 U' R' U' R U R' F'"];
-var VIEWS=[[-28,-38],[32,-38],[-28,-38],[-28,-38]];
+var VIEWS=[[32,-38],[32,-38],[-28,-38],[-28,-38]];
 var cubeEl=document.getElementById('rbCube'),scene=document.getElementById('rbScene');
 var mvEl=document.getElementById('rbMoves'),stEl=document.getElementById('rbStatus'),histEl=document.getElementById('rbHist');
 var inp=document.getElementById('rbAlg'),errEl=document.getElementById('rbErr');
 var playBtn=document.getElementById('rbPlay'),padEl=document.getElementById('rbPad');
-var cubies=[],busy=false,playing=false,list=[],listStr='',idx=0,note='',hist=[];
+var cubies=[],busy=false,playing=false,list=[],listStr='',idx=0,note='',hist=[],fresh=null;
 var rx=-28,ry=-38;
 
 function I(){return [[1,0,0],[0,1,0],[0,0,1]]}
@@ -253,16 +252,23 @@ function run(){
   if(idx>=list.length){playing=false;draw();return}
   step(run);
 }
-function loadStage(i){
-  playing=false;reset();
+function setState(i,before){
+  reset();
   turn({f:'z',n:2},false);
   var rest=[];
-  for(var k=i;k<STAGES.length;k++)rest=rest.concat(parse(STAGES[k]));
+  for(var k=before?i:i+1;k<STAGES.length;k++)rest=rest.concat(parse(STAGES[k]));
   inverse(rest).forEach(function(m){turn(m,false)});
-  var p=parse(STAGES[i]);
-  list=p;listStr=p.map(fmt).join(' ');idx=0;note='';hist=[];inp.value=STAGES[i];errEl.textContent='';
+}
+function loadStage(i){
+  playing=false;setState(i,false);
+  list=[];listStr='';idx=0;note=NAMES[i]+': '+STAGES[i];hist=[];inp.value=STAGES[i];errEl.textContent='';
+  fresh=i;
   rx=VIEWS[i][0];ry=VIEWS[i][1];view();
   markStage(i);draw();
+}
+function prep(){
+  if(fresh!==null&&inp.value.trim()===STAGES[fresh])setState(fresh,true);
+  fresh=null;
 }
 
 PAD.forEach(function(tok){
@@ -272,7 +278,7 @@ PAD.forEach(function(tok){
   if(COL[f]){b.style.background=COL[f];b.style.color=INK[f];b.style.borderColor='transparent'}
   b.addEventListener('click',function(){
     if(busy)return;
-    playing=false;busy=true;
+    playing=false;busy=true;fresh=null;
     turn(parse(tok)[0],true,function(){list=[];listStr='';idx=0;note='';hist.push(tok);busy=false;draw()});
   });
   padEl.appendChild(b);
@@ -281,11 +287,13 @@ PAD.forEach(function(tok){
 playBtn.addEventListener('click',function(){
   if(playing){playing=false;draw();return}
   if(busy)return;
+  prep();
   if(!ensure()){draw();return}
   playing=true;draw();run();
 });
 document.getElementById('rbStep').addEventListener('click',function(){
   if(busy||playing)return;
+  prep();
   if(!ensure()){draw();return}
   draw();step();
 });
@@ -294,9 +302,9 @@ document.querySelectorAll('.rb-stage').forEach(function(b){b.addEventListener('c
   if(busy)return;
   loadStage(Number(b.getAttribute('data-stage')));
 })});
-document.getElementById('rbReset').addEventListener('click',function(){if(busy)return;playing=false;reset();list=[];listStr='';idx=0;note='';hist=[];markStage(-1);draw()});
+document.getElementById('rbReset').addEventListener('click',function(){if(busy)return;playing=false;fresh=null;reset();list=[];listStr='';idx=0;note='';hist=[];markStage(-1);draw()});
 document.getElementById('rbScr').addEventListener('click',function(){
-  if(busy)return;playing=false;reset();
+  if(busy)return;playing=false;fresh=null;reset();
   var fs='UDLRFB',ns=[1,-1,2],sc=[],last='';
   while(sc.length<20){var f=fs[Math.floor(Math.random()*6)];if(f===last)continue;last=f;sc.push({f:f,n:ns[Math.floor(Math.random()*3)]})}
   sc.forEach(function(m){turn(m,false)});
@@ -363,7 +371,7 @@ function endDrag(){
   var target=Math.round(d.deg/90)*90;
   anim(d.sel,d.ra,d.deg,target,160,function(){
     var nm=nameOf(d.ra,d.layer,Math.round(target/90));
-    if(nm){list=[];listStr='';idx=0;note='';hist.push(nm)}
+    if(nm){list=[];listStr='';idx=0;note='';hist.push(nm);fresh=null}
     busy=false;draw();
   });
 }

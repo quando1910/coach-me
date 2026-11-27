@@ -8,8 +8,8 @@ Learn to solve a 3x3 Rubik's cube with an interactive 3D cube in the chat. Turn 
 
 - Drag a layer to turn it; drag outside the cube to change the view.
 - Use the move pad for single turns, Scramble for a random state, and Reset to start over.
-- Cross, F2L, OLL, and PLL load a sample case at the start of that stage. Play runs the stage's algorithm; Step runs it one move at a time.
-- **Ask coach** sends the current state to Claude, which replies like this:
+- Cross, F2L, and OLL show what each stage achieves: the cube jumps to the state right after that stage (for Cross, the white cross with matching side edges). Play rewinds to the start of the stage and runs its algorithm; Step runs it one move at a time.
+- **Ask coach** sends the current state to Claude to get help solving it. Claude replies like this:
 
   ```
   CFOP method:
