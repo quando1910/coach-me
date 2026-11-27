@@ -1,5 +1,5 @@
 ---
-name: writing
+name: coach-writing
 description: Correct English writing like a teacher's red pen, marking errors inside the text. Use when the user sends English text and asks to fix, correct, proofread, or check it, in any language.
 ---
 
