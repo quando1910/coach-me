@@ -121,9 +121,9 @@ Write these in the user's language, in this order. Keep it short and don't repea
 
 ## Widget
 
-This skill shares its widget with `coach-writing`. Read [`../../reference/writing/widget.md`](../../reference/writing/widget.md) (relative to this skill's folder; it is `reference/writing/widget.md` at the plugin root) before building the widget. It holds the HTML template, the markup for each kind of mark, and the technical notes. Use it as written; don't rebuild the styles from memory.
+This skill shares its widget with `coach-writing`. Read [`../coach-writing/reference/widget.md`](../coach-writing/reference/widget.md) (relative to this skill's folder; it is in the `coach-writing` skill, which sits next to this one) before building the widget. It holds the HTML template, the markup for each kind of mark, and the technical notes. Use it as written; don't rebuild the styles from memory.
 
-If that file can't be read, the skill was installed without the rest of the plugin. Use the markdown fallback below and tell the user to install the whole `coach-me` plugin.
+If that file can't be read, the `coach-writing` skill is not available next to this one. Use the markdown fallback below and tell the user that the widget needs the `coach-writing` skill installed and enabled alongside this one.
 
 Legend entries for this skill:
 

@@ -1,6 +1,6 @@
 # Correction widget (shared)
 
-The inline HTML widget that shows corrections inside the text. `coach-writing` and `coach-writing-ielts` both use it. Each skill's `SKILL.md` gives its own legend entries and button labels; everything else comes from this file. It lives outside the skill folders so that no skill owns it; skills reach it as `../../reference/writing/widget.md`.
+The inline HTML widget that shows corrections inside the text. `coach-writing` and `coach-writing-ielts` both use it. Each skill's `SKILL.md` gives its own legend entries and button labels; everything else comes from this file. It lives inside the `coach-writing` skill folder because some hosts (claude.ai on the web) only load files that are inside a skill folder; `coach-writing-ielts` reaches it as `../coach-writing/reference/widget.md`.
 
 Use the host's CSS variables so it works in dark mode (`--text-danger`, `--text-accent`, `--text-secondary`, `--bg-neutral`). Keep the positioning values below exactly as they are; they were tuned after several rounds of misalignment.
 

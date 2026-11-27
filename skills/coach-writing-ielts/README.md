@@ -8,7 +8,7 @@ For everyday writing (emails, messages), use [`coach-writing`](../coach-writing)
 
 Red marks are required fixes. Where two wordings are equally good, both are shown separated by " / ". Blue marks are optional.
 
-![Correction widget showing struck-through errors with fixes written above them and blue optional suggestions](../../reference/writing/widget-example.png)
+![Correction widget showing struck-through errors with fixes written above them and blue optional suggestions](../coach-writing/reference/widget-example.png)
 
 ## Use it
 
@@ -24,6 +24,6 @@ You can write the request in your own language. Claude replies in that language 
 
 The band is an estimate, not an official score.
 
-## Install
+## Requires coach-writing
 
-Install the `coach-me` plugin (see the [repo README](../../README.md)). This skill reads the correction widget from [`reference/writing/widget.md`](../../reference/writing/widget.md) at the plugin root, so the skill folder on its own shows corrections as plain markdown instead of the widget.
+This skill reads the correction widget from [`../coach-writing/reference/widget.md`](../coach-writing/reference/widget.md). Installing the `coach-me` plugin gives you both skills. Without `coach-writing` next to it, this skill shows corrections as plain markdown instead of the widget.

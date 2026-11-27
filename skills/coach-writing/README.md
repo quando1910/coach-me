@@ -6,7 +6,7 @@ Corrects your English writing like a teacher with a red pen: wrong words are str
 
 Red marks are errors to fix. Blue marks are optional upgrades.
 
-![Correction widget showing struck-through errors with fixes written above them and blue upgrade suggestions](../../reference/writing/widget-example.png)
+![Correction widget showing struck-through errors with fixes written above them and blue upgrade suggestions](reference/widget-example.png)
 
 ## Use it
 
