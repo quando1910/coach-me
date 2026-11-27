@@ -1,6 +1,6 @@
 # coach-me
 
-Claude coaching skills: English writing and the Rubik's cube. Small and focused: each skill does one thing.
+Claude skills that coach you as you learn: practise, get feedback, improve. Small and focused: each skill does one thing.
 
 ## Skills
 
