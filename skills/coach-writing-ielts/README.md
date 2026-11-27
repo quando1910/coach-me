@@ -22,6 +22,6 @@ You can write the request in your own language. Claude replies in that language 
 
 The band is an estimate, not an official score.
 
-## Requires coach-writing
+## Install
 
-This skill uses the correction widget stored in [`../coach-writing/reference/widget.md`](../coach-writing/reference/widget.md). Installing the `coach-me` plugin gives you both. If you install skills by hand, keep the `coach-writing` folder next to this one; without it, corrections are shown as plain markdown instead of the widget.
+Install the `coach-me` plugin (see the [repo README](../../README.md)). This skill reads the correction widget from [`reference/writing/widget.md`](../../reference/writing/widget.md) at the plugin root, so the skill folder on its own shows corrections as plain markdown instead of the widget.

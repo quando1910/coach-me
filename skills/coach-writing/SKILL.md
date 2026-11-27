@@ -61,7 +61,9 @@ Don't use curved arrows or other invented symbols: they aren't standard and tend
 
 ## Widget
 
-Read [`reference/widget.md`](reference/widget.md) in this skill's folder before building the widget. It holds the HTML template, the markup for each kind of mark, and the technical notes. Use it as written; don't rebuild the styles from memory.
+Read [`../../reference/writing/widget.md`](../../reference/writing/widget.md) (relative to this skill's folder; it is `reference/writing/widget.md` at the plugin root) before building the widget. It holds the HTML template, the markup for each kind of mark, and the technical notes. Use it as written; don't rebuild the styles from memory.
+
+If that file can't be read, the skill was installed without the rest of the plugin. Use the markdown fallback below and tell the user to install the whole `coach-me` plugin.
 
 Legend entries for this skill:
 
