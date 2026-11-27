@@ -4,18 +4,20 @@
     "name": "Quan Do",
     "url": "https://github.com/quando1910"
   },
-  "description": "Claude skills for learning English, as an installable Claude Code plugin.",
+  "description": "Claude coaching skills (English writing, Rubik's cube), as an installable Claude Code plugin.",
   "plugins": [
     {
       "name": "coach-me",
       "source": "./",
-      "description": "Claude skills for learning English: teacher-style writing correction, with more skills to come.",
+      "description": "Claude coaching skills: teacher-style English writing correction and a Rubik's cube coach, with more skills to come.",
       "category": "learning",
       "keywords": [
         "english",
         "language-learning",
         "writing",
-        "proofreading"
+        "proofreading",
+        "rubiks-cube",
+        "cfop"
       ]
     }
   ]

@@ -1,6 +1,6 @@
 # coach-me
 
-Claude skills for learning English. Small and focused: each skill does one thing.
+Claude coaching skills: English writing and the Rubik's cube. Small and focused: each skill does one thing.
 
 ## Skills
 
@@ -8,6 +8,7 @@ Claude skills for learning English. Small and focused: each skill does one thing
 |---|---|---|
 | [`coach-writing`](./skills/coach-writing) | `/coach-writing` | Corrects your English writing like a teacher with a red pen: wrong words are struck through with the fix written above, missing words get a ∧ caret, unclear sentences are crossed out and rewritten. Optional blue suggestions upgrade basic vocabulary, sentence structure, and cohesion. Includes a button to copy the clean version. |
 | [`coach-writing-ielts`](./skills/coach-writing-ielts) | `/coach-writing-ielts` | Corrects an IELTS Writing essay like an IELTS teacher: besides grammar, it replaces everyday words with academic ones, rewrites awkward phrases, and crosses out examples that overlap or don't follow logically. Ends with a band estimate for each of the four IELTS criteria. |
+| [`coach-rubik`](./skills/coach-rubik) | `/coach-rubik` | An interactive 3D Rubik's cube in the chat: turn it, load sample CFOP cases, and press Ask coach to get the moves for each CFOP stage (Cross, F2L, OLL, PLL) for the current state. Needs code execution, which runs the solver. |
 
 More skills may be added over time. Each one lives in its own folder under `skills/` with its own `SKILL.md`.
 
@@ -24,10 +25,10 @@ This installs every skill in the repo. Skills only run when you call them or whe
 
 ### Claude app (single skill)
 
-1. Download the whole folder of the skill you want (for example `skills/coach-writing/`), including its `reference/` folder.
+1. Download the whole folder of the skill you want (for example `skills/coach-writing/`), including its `reference/` and `scripts/` folders.
 2. Add it to Claude as a custom skill. Installation steps can change, so check Anthropic's current documentation on adding custom skills.
 
-`coach-writing` is complete on its own. `coach-writing-ielts` uses the widget in `skills/coach-writing/reference/`, so it needs `coach-writing` installed next to it; without it, corrections are shown as plain markdown instead of the widget.
+`coach-writing` and `coach-rubik` are complete on their own. `coach-writing-ielts` uses the widget in `skills/coach-writing/reference/`, so it needs `coach-writing` installed next to it; without it, corrections are shown as plain markdown instead of the widget.
 
 ## License
 

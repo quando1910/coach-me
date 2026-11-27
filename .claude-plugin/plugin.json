@@ -1,6 +1,6 @@
 {
   "name": "coach-me",
-  "description": "Claude skills for learning English: teacher-style writing correction, with more skills to come.",
+  "description": "Claude coaching skills: teacher-style English writing correction and a Rubik's cube coach, with more skills to come.",
   "author": {
     "name": "Quan Do",
     "url": "https://github.com/quando1910"
@@ -12,6 +12,8 @@
     "language-learning",
     "writing",
     "proofreading",
+    "rubiks-cube",
+    "cfop",
     "skills"
   ]
 }
