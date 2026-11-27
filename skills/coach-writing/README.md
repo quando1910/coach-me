@@ -6,11 +6,13 @@ Corrects your English writing like a teacher with a red pen: wrong words are str
 
 Red marks are errors to fix. Blue marks are optional upgrades.
 
-<!-- Add a screenshot of the widget here -->
+![Correction widget showing struck-through errors with fixes written above them and blue upgrade suggestions](../../reference/writing/widget-example.png)
 
 ## Use it
 
-Once installed, send Claude some English text and ask it to check or correct it, or call `/coach-writing` in Claude Code. For example:
+**Type `/coach-writing` followed by your text to get it corrected.**
+
+You can also send Claude some English text and ask it to check or correct it. For example:
 
 > Check my writing: I want go to the supermarket because my sister like fruit.
 
