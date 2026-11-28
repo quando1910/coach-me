@@ -25,4 +25,4 @@ Learn to solve a 3x3 Rubik's cube from zero, with a coach and a 3D cube in the c
 
 [`scripts/solve.py`](scripts/solve.py) reads the cube state, reports which stages are done (`--status`), and solves any state with CFOP or, with `--method lbl`, Layer by Layer. [`scripts/solve.js`](scripts/solve.js) is the same solver in JavaScript and gives identical answers. Every solution is applied to the state and checked before it is shown.
 
-The checks run in Claude's code execution, so it must be turned on (it already is if skills work for you).
+The checks run in Claude's code execution, so it must be turned on (it already is if skills work for you). The cube itself ([`assets/cube.js`](assets/cube.js)) loads from jsDelivr, so the chat needs internet access to show it.
