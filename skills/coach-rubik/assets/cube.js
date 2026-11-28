@@ -12,7 +12,7 @@
   var style = document.createElement("style");
   style.textContent = ".rbw{font-size:14px;line-height:1.5}\n.rbw button{font-size:14px;line-height:1.3;padding:6px 12px;border-radius:var(--radius);min-height:0}\n.rbw .rb-nav{padding:6px 8px}\n.rbw .rb-tabs .rb-tab{border:0;border-bottom:2px solid transparent;border-radius:0;background:none;padding:8px 14px;font-weight:500;color:var(--text-secondary)}\n.rbw .rb-tabs .rb-tab.sel{color:var(--text-primary);border-bottom-color:var(--text-accent)}\n.rbw .rb-case{font-size:13px;padding:4px 10px}\n.rbw .rb-rand{padding:4px 7px}\n.rbw{container-type:inline-size}\n.rb-top{position:relative;display:flex;flex-direction:column;background:var(--bg-neutral);border-radius:var(--radius);margin:0 0 10px}\n.rb-scene{height:280px;overscroll-behavior:contain;-webkit-user-select:none;-webkit-touch-callout:none;perspective:900px;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:grab;user-select:none}\n.rb-cube{position:relative;width:0;height:0;transform-style:preserve-3d}\n.rb-c{position:absolute;width:48px;height:48px;left:-24px;top:-24px;transform-style:preserve-3d}\n.rb-f{position:absolute;inset:0;background:#141414;display:flex;align-items:center;justify-content:center;backface-visibility:hidden}\n.rb-f i{display:block;width:42px;height:42px;border-radius:6px;pointer-events:none}\n.rb-f.st{cursor:pointer}\n.rb-lbl{position:absolute;left:50%;top:50%;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:rgba(10,14,20,.78);color:#fff;font-weight:500;font-size:14px;border-radius:6px;box-shadow:0 2px 5px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.12);pointer-events:none}\n.rb-hd{display:flex;align-items:flex-start;gap:12px;padding:12px 14px 0}\n.rb-ft{display:flex;justify-content:space-between;padding:0 10px 10px}\n.rb-tl,.rb-br{display:flex;gap:6px}\n.rb-status{margin-right:42px;font-size:14px;font-weight:500;white-space:nowrap}\n.rb-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 10px}\n.rb-lb{font-size:13px;color:var(--text-secondary);min-width:64px}\n.rb-nav{padding:4px 7px;line-height:0}\n.rb-nav svg{width:18px;height:18px}\n.rb-tl .rb-nav,.rb-br .rb-nav{padding:7px 9px}\n.rb-nav:disabled{opacity:.35;cursor:default}\n.rb-hist span{display:inline-block;width:26px;text-align:center;padding:1px 0;border-radius:5px}\n.rb-hist span.on{background:var(--bg-accent);color:var(--text-accent)}\n.rb-hist span.fut{opacity:.4}\n.rb-hist{font-family:var(--font-mono);font-size:13px;color:var(--text-secondary);word-break:break-word;flex:1;min-width:0}\n.rb-tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin:6px 0 10px}\n.rb-tab{border:0;border-bottom:2px solid transparent;border-radius:0;background:none;padding:8px 14px;font-weight:500;color:var(--text-secondary)}\n.rb-tab.sel{color:var(--text-primary);border-bottom-color:var(--text-accent)}\n.rb-steps{display:grid;gap:8px}\n.rb-steps{gap:10px}\n.rb-step{display:grid;grid-template-columns:150px 1fr;gap:4px 8px;align-items:start}\n.rb-step span{font-size:13px;color:var(--text-secondary);padding-top:5px}\n.rb-btns{display:flex;flex-wrap:wrap;gap:6px}\n@container (max-width:480px){.rb-step{grid-template-columns:1fr}.rb-step span{padding-top:0}.rb-scene{height:250px}.rb-status{margin-right:0}}\n.rb-case{font-size:13px;padding:4px 10px}\n.rb-rand{padding:4px 7px;line-height:0;color:var(--text-secondary)}\n.rb-rand svg{width:16px;height:16px}\n.rb-rand.sel{border-color:var(--border-accent);color:var(--text-accent);background:var(--bg-accent)}\n.rb-case.sel{border-color:var(--border-accent);color:var(--text-accent);background:var(--bg-accent)}\n.rb-ex{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}\n.rb-ex b{font-size:14px;font-weight:500}\n.rb-ex span{font-size:13px;color:var(--text-secondary)}\n#rbErr{font-size:13px;color:var(--text-danger);margin:0 0 10px}\n#rbErr:empty{display:none}";
   document.head.appendChild(style);
-  mount.innerHTML = "<div class=\"rbw\">\n<div class=\"rb-top\">\n<div class=\"rb-hd\"><div class=\"rb-ex\" id=\"rbEx\"></div><span class=\"rb-status\" id=\"rbStatus\"></span></div>\n<div class=\"rb-scene\" id=\"rbScene\"><div class=\"rb-cube\" id=\"rbCube\"></div></div>\n<div class=\"rb-ft\"><div class=\"rb-tl\"><button class=\"rb-nav\" id=\"rbScr\" title=\"Scramble\" aria-label=\"Scramble\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22\"/><path d=\"m18 2 4 4-4 4\"/><path d=\"M2 6h1.9c1.5 0 2.9.9 3.6 2.2\"/><path d=\"M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8\"/><path d=\"m18 14 4 4-4 4\"/></svg></button><button class=\"rb-nav\" id=\"rbReset\" title=\"Reset\" aria-label=\"Reset\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 3-6.7L3 8\"/><path d=\"M3 3v5h5\"/></svg></button></div>\n<div class=\"rb-br\"><button class=\"rb-nav\" id=\"rbAnswer\" title=\"Answer: show the moves\" aria-label=\"Answer: show the moves\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M9 18h6\"/><path d=\"M10 22h4\"/><path d=\"M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z\"/></svg></button><button class=\"rb-nav\" id=\"rbExplain\" title=\"Explain: ask Claude why\" aria-label=\"Explain: ask Claude why\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M7.9 20A9 9 0 1 0 4 16.1L2 22z\"/><path d=\"M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3\"/><path d=\"M12 17h.01\"/></svg></button></div></div>\n</div>\n\n<div class=\"rb-row\">\n<span class=\"rb-lb\">History</span>\n<button class=\"rb-nav\" id=\"rbBack\" title=\"Step back\" aria-label=\"Step back\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 5v14\"/><path d=\"M18 5 9 12l9 7z\"/></svg></button>\n<button class=\"rb-nav\" id=\"rbFwd\" title=\"Step forward\" aria-label=\"Step forward\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 5v14\"/><path d=\"M6 5l9 7-9 7z\"/></svg></button>\n</div>\n<div class=\"rb-hist\" id=\"rbHist\" style=\"margin:-4px 0 10px;display:flex;flex-wrap:wrap;gap:4px\"></div>\n\n<div class=\"rb-row\">\n<input id=\"rbAlg\" type=\"text\" aria-label=\"Moves\" placeholder=\"Moves, e.g. R U R' U'\" style=\"flex:1;min-width:200px;font-family:var(--font-mono)\">\n<button class=\"rb-nav\" id=\"rbPlay\" title=\"Play\" aria-label=\"Play\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M7 4.5v15l13-7.5z\"/></svg></button>\n</div>\n<div id=\"rbErr\"></div>\n\n<div class=\"rb-tabs\" id=\"rbTabs\" role=\"tablist\"></div>\n<div class=\"rb-steps\" id=\"rbSteps\"></div>\n\n</div>";
+  mount.innerHTML = "<div class=\"rbw\">\n<div class=\"rb-top\">\n<div class=\"rb-hd\"><div class=\"rb-ex\" id=\"rbEx\"></div><span class=\"rb-status\" id=\"rbStatus\"></span></div>\n<div class=\"rb-scene\" id=\"rbScene\"><div class=\"rb-cube\" id=\"rbCube\"></div></div>\n<div class=\"rb-ft\"><div class=\"rb-tl\"><button class=\"rb-nav\" id=\"rbScr\" title=\"Scramble\" aria-label=\"Scramble\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M2 18h1.4c1.3 0 2.5-.6 3.3-1.7l6.1-8.6c.7-1.1 2-1.7 3.3-1.7H22\"/><path d=\"m18 2 4 4-4 4\"/><path d=\"M2 6h1.9c1.5 0 2.9.9 3.6 2.2\"/><path d=\"M22 18h-5.9c-1.3 0-2.6-.7-3.3-1.8l-.5-.8\"/><path d=\"m18 14 4 4-4 4\"/></svg></button><button class=\"rb-nav\" id=\"rbReset\" title=\"Reset\" aria-label=\"Reset\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M3 12a9 9 0 1 0 3-6.7L3 8\"/><path d=\"M3 3v5h5\"/></svg></button></div>\n<div class=\"rb-br\"><button class=\"rb-nav\" id=\"rbAnswer\" title=\"Answer: show the moves\" aria-label=\"Answer: show the moves\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M9 18h6\"/><path d=\"M10 22h4\"/><path d=\"M12 2a7 7 0 0 0-4 12.7c.6.5 1 1.3 1 2.3h6c0-1 .4-1.8 1-2.3A7 7 0 0 0 12 2z\"/></svg></button><button class=\"rb-nav\" id=\"rbAsk\" title=\"Ask AI: send this cube to Claude\" aria-label=\"Ask AI: send this cube to Claude\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M7.9 20A9 9 0 1 0 4 16.1L2 22z\"/><path d=\"M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3\"/><path d=\"M12 17h.01\"/></svg></button></div></div>\n</div>\n\n<div class=\"rb-row\">\n<span class=\"rb-lb\">History</span>\n<button class=\"rb-nav\" id=\"rbBack\" title=\"Step back\" aria-label=\"Step back\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M6 5v14\"/><path d=\"M18 5 9 12l9 7z\"/></svg></button>\n<button class=\"rb-nav\" id=\"rbFwd\" title=\"Step forward\" aria-label=\"Step forward\"><svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M18 5v14\"/><path d=\"M6 5l9 7-9 7z\"/></svg></button>\n</div>\n<div class=\"rb-hist\" id=\"rbHist\" style=\"margin:-4px 0 10px;display:flex;flex-wrap:wrap;gap:4px\"></div>\n\n<div class=\"rb-row\">\n<input id=\"rbAlg\" type=\"text\" aria-label=\"Moves\" placeholder=\"Moves, e.g. R U R' U'\" style=\"flex:1;min-width:200px;font-family:var(--font-mono)\">\n<button class=\"rb-nav\" id=\"rbPlay\" title=\"Play\" aria-label=\"Play\"><svg viewBox=\"0 0 24 24\" fill=\"currentColor\" aria-hidden=\"true\"><path d=\"M7 4.5v15l13-7.5z\"/></svg></button>\n</div>\n<div id=\"rbErr\"></div>\n\n<div class=\"rb-tabs\" id=\"rbTabs\" role=\"tablist\"></div>\n<div class=\"rb-steps\" id=\"rbSteps\"></div>\n\n</div>";
 })();
 /* SOLVER START */
 /*
@@ -650,13 +650,32 @@ function draw(){
   playBtn.innerHTML=playing?'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>':'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';playBtn.title=playing?'Stop':'Play';playBtn.setAttribute('aria-label',playBtn.title);
 }
 /* Host hooks: a page that embeds this script (the artifact version) can set window.coachRubikHost =
-   {change(snapshot), explain(snapshot)} to save the state, and call window.coachRubik.play(moves). */
+   {change(snapshot)} to save the state, and call window.coachRubik.play(moves). */
 function snapshot(withAnswer){
   var st=stateInfo(),mv='';
   if(withAnswer){try{mv=answerMoves()}catch(e){}}
   return {facelets:st.facelets,centers:st.scheme,method:METHODS[current?current.m:tab][0],
     exercise:current?exerciseName():'',goal:current?METHODS[current.m][1][current.s][3]:'',
-    answer:mv,history:hist.slice(0,hpos).join(' '),solved:solved()};
+    answer:mv,history:hist.slice(0,hpos).join(' '),solved:solved(),restore:pack()};
+}
+// Exact widget state for restoring after a reload: each piece's position and rotation, plus tab, exercise and history.
+function pack(){
+  return {cubies:cubies.map(function(c){return c.p.concat(c.m[0],c.m[1],c.m[2]).join(',')}).join(';'),
+    tab:tab,current:current,hist:hist.slice(),hpos:hpos,rx:rx,ry:ry};
+}
+function restore(o){
+  if(!o||busy||playing)return false;
+  var rows=String(o.cubies||'').split(';').map(function(r){return r.split(',').map(Number)});
+  if(rows.length!==cubies.length||rows.some(function(n){return n.length!==12||n.some(function(v){return !isFinite(v)})}))return false;
+  cubies.forEach(function(c,i){var n=rows[i];c.p=n.slice(0,3);c.m=[n.slice(3,6),n.slice(6,9),n.slice(9,12)];c.el.style.transform=base(c)});
+  if(METHODS[o.tab])tab=o.tab;
+  var c=o.current,ok=c&&METHODS[c.m]&&METHODS[c.m][1][c.s]&&(c.i===-1||METHODS[c.m][1][c.s][1][c.i]);
+  current=ok?{m:c.m,s:c.s,i:c.i}:null;
+  hist=Array.isArray(o.hist)?o.hist.filter(function(t){return parse(t)}).map(String):[];
+  hpos=Math.max(0,Math.min(hist.length,o.hpos|0));
+  if(isFinite(o.rx)&&isFinite(o.ry)){rx=+o.rx;ry=+o.ry;view()}
+  clearAlg();renderTab();draw();
+  return true;
 }
 var lastSent='';
 function notifyHost(){
@@ -665,7 +684,7 @@ function notifyHost(){
   var s=snapshot(),k=JSON.stringify(s);
   if(k!==lastSent){lastSent=k;h.change(s)}
 }
-window.coachRubik={play:function(moves){if(busy||playing)return false;inp.value=moves;playBtn.click();return true},snapshot:function(){return snapshot(true)}};
+window.coachRubik={restore:restore,play:function(moves){if(busy||playing)return false;inp.value=moves;playBtn.click();return true},snapshot:function(){return snapshot(true)}};
 function reset(){cubies.forEach(function(c){c.p=c.home.slice();c.m=I();c.el.style.transform=base(c)})}
 function view(){cubeEl.style.transform='rotateX('+rx+'deg) rotateY('+ry+'deg)'}
 function clearAlg(){list=[];listStr='';idx=0;inp.value='';errEl.textContent=''}
@@ -806,18 +825,16 @@ function stamp(){
   function p(n,w){n=String(n);while(n.length<(w||2))n='0'+n;return n}
   return p(d.getHours())+':'+p(d.getMinutes())+':'+p(d.getSeconds())+'.'+p(d.getMilliseconds(),3);
 }
-document.getElementById('rbExplain').addEventListener('click',function(){
+document.getElementById('rbAsk').addEventListener('click',function(){
   if(busy||playing)return;
   var st=stateInfo(),mv='';
   try{mv=answerMoves()}catch(e){}
-  var msg=current?'Explain this exercise: '+exerciseName()+'.':'Explain how to solve my cube from here ('+METHODS[tab][0]+' method).';
-  msg+='\nAnswer: '+(mv||'nothing to do')
+  var msg='My cube right now ('+(current?exerciseName():'Practice \u00b7 '+METHODS[tab][0])+').'
+    +'\nAnswer: '+(mv||'nothing to do')
     +'\nState (Kociemba facelet string, face order U R F D L B):\n'+st.facelets
     +'\nCenters: '+st.scheme
-    +'\nAsked at: '+stamp();
-  var h=window.coachRubikHost;
-  if(h&&h.explain){var s=snapshot(true);s.message=msg;h.explain(s)}
-  else if(typeof sendPrompt==='function'){sendPrompt(msg)}
+    +'\nSent at: '+stamp();
+  if(typeof sendPrompt==='function'){sendPrompt(msg)}
   else{errEl.textContent='Could not send to chat. Copy this instead: '+msg}
 });
 

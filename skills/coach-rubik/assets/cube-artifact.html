@@ -1,4 +1,5 @@
 <title>Rubik Coach</title>
+<meta name="coach-rubik-version" content="1.0.3">
 <style>
 :root{--bg:#faf9f5;--bg-neutral:#f0eee6;--text-primary:#1f1e1d;--text-secondary:#6b6a66;--text-accent:#2c5fd9;--bg-accent:#e3ebfc;--border-accent:#2c5fd9;--text-success:#2f8a4f;--text-danger:#c2353b;--border:rgba(0,0,0,.1);--border-strong:rgba(0,0,0,.22);--radius:8px;--font-mono:ui-monospace,SFMono-Regular,Menlo,monospace}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1f1e1d;--bg-neutral:#2a2927;--text-primary:#eeede9;--text-secondary:#a3a19b;--text-accent:#86a8ff;--bg-accent:#1f2b45;--border-accent:#86a8ff;--text-success:#5ccf8d;--text-danger:#ff7b80;--border:rgba(255,255,255,.09);--border-strong:rgba(255,255,255,.22)}}
@@ -11,7 +12,7 @@ input{font:inherit;color:inherit;background:transparent;border:.5px solid var(--
 #rbNote{font-size:13px;color:var(--text-secondary);margin:0 0 10px;min-height:1em}
 .sr-only{position:absolute;left:-9999px}
 .rbw .rb-status{margin-right:0} /* the chat widget keeps room for its menu button; an artifact has none */
-#rbExplain{display:none} /* Claude reads the saved state directly, so the learner just asks in the chat */
+#rbAsk{display:none} /* Claude reads the saved state itself, so the artifact needs no Ask AI button */
 </style>
 <main>
 <h1 class="sr-only">Rubik's cube coach</h1>
@@ -40,8 +41,15 @@ input{font:inherit;color:inherit;background:transparent;border:.5px solid var(--
   window.claude.use('db').then(async function(d){
     if(!d){clearTimeout(slow);say('Sign in to save the cube, so Claude can see it.');return}
     db=d;
-    try{var prev=await db.doc('cube/state').get();if(prev.exists)lastCommand=(prev.data()||{}).lastCommand||null}catch(e){}
-    clearTimeout(slow);say('');stateReady=true;
+    try{
+      var prev=await db.doc('cube/state').get();
+      if(prev.exists){
+        var p=prev.data()||{};lastCommand=p.lastCommand||null;
+        // Put the cube back where the learner left it; this redraw also queues the restored state to save.
+        if(p.restore&&window.coachRubik&&!window.coachRubik.restore(p.restore))say('Could not restore your last cube, so it starts solved.');
+      }
+    }catch(e){}
+    clearTimeout(slow);if(note.textContent.indexOf('Could not restore')<0)say('');stateReady=true;
     if(!pending&&window.coachRubik)pending=Object.assign({},window.coachRubik.snapshot(),{answer:''});
     flush();
     db.doc('cube/command').onSnapshot(function(snap){
