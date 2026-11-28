@@ -34,7 +34,7 @@ Read only the files the current lesson needs.
 - If the learner hasn't said, ask one question: have they solved a cube before? Recommend **LBL** to anyone who hasn't, **CFOP** to anyone who has.
 - Show the cube once per conversation, or again if they ask:
   - **Artifact first** (`reference/artifact.md`): you can read the cube yourself.
-  - **Widget** (`reference/widget.md`) if the artifact doesn't open on their device (e.g. the Claude app on iOS 18; updating the system fixes it) or you can't publish or read artifacts. Once you switch to the widget, keep it for the conversation.
+  - **Widget** (`reference/widget.md`) if the artifact doesn't open on their device (on iPhone, artifacts need iOS 26 or later) or you can't publish or read artifacts. Once you switch to the widget, keep it for the conversation.
 - For a beginner, teach the three basics lessons first, briefly, using the cube. Skip what they already know.
 
 ### 2. Teach one step at a time

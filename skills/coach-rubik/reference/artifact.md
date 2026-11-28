@@ -8,7 +8,7 @@ It is the same cube as the widget (`widget.md` describes the controls), with two
 
 Use `widget.md` for the rest of the conversation when:
 
-- the learner says the artifact doesn't open, or opens blank. The Claude app on older systems can't open artifacts (iOS 18 can't; iOS 26 can). Tell them updating the system fixes it, and show the widget now.
+- the learner says the artifact doesn't open, or opens blank. On iPhone, the Claude app needs iOS 26 or later to open artifacts. Tell them updating to iOS 26 fixes it, and show the widget now.
 - you have no tool to publish an artifact with a database, or no tool to read that database.
 
 ## Show the cube
