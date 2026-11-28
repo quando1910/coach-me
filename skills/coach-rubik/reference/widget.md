@@ -35,7 +35,7 @@ Case ids match the lesson files in `methods/`. To add a method, add an entry to 
 ```html
 <h2 class="sr-only">Interactive 3D Rubik's cube for learning to solve it, with practice exercises for the Layer by Layer and CFOP methods, an Answer button that shows the moves, and an Explain button that asks Claude why those moves work.</h2>
 <div id="coach-rubik" style="min-height:420px;font-size:14px;color:var(--text-secondary)">Loading the cube…</div>
-<script src="https://cdn.jsdelivr.net/gh/quando1910/coach-me@v1.0.0/skills/coach-rubik/assets/cube.js" onerror="document.getElementById('coach-rubik').textContent='Could not load the cube from cdn.jsdelivr.net. Check your connection, then ask Claude to show the cube again.'"></script>
+<script src="https://cdn.jsdelivr.net/gh/quando1910/coach-me@v1.0.1/skills/coach-rubik/assets/cube.js" onerror="document.getElementById('coach-rubik').textContent='Could not load the cube from cdn.jsdelivr.net. Check your connection, then ask Claude to show the cube again.'"></script>
 ```
 
 If the widget shows the "Could not load" message, tell the user the cube couldn't be loaded and continue teaching in text; the lesson files and the solver still work.
