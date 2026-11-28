@@ -646,8 +646,26 @@ function draw(){
   var ok=solved();
   stEl.textContent=ok?'Solved':'Not solved';
   stEl.style.color=ok?'var(--text-success)':'var(--text-secondary)';
+  notifyHost();
   playBtn.innerHTML=playing?'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="1.5"/></svg>':'<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg>';playBtn.title=playing?'Stop':'Play';playBtn.setAttribute('aria-label',playBtn.title);
 }
+/* Host hooks: a page that embeds this script (the artifact version) can set window.coachRubikHost =
+   {change(snapshot), explain(snapshot)} to save the state, and call window.coachRubik.play(moves). */
+function snapshot(withAnswer){
+  var st=stateInfo(),mv='';
+  if(withAnswer){try{mv=answerMoves()}catch(e){}}
+  return {facelets:st.facelets,centers:st.scheme,method:METHODS[current?current.m:tab][0],
+    exercise:current?exerciseName():'',goal:current?METHODS[current.m][1][current.s][3]:'',
+    answer:mv,history:hist.slice(0,hpos).join(' '),solved:solved()};
+}
+var lastSent='';
+function notifyHost(){
+  var h=window.coachRubikHost;
+  if(!h||!h.change||busy||playing)return;
+  var s=snapshot(),k=JSON.stringify(s);
+  if(k!==lastSent){lastSent=k;h.change(s)}
+}
+window.coachRubik={play:function(moves){if(busy||playing)return false;inp.value=moves;playBtn.click();return true},snapshot:function(){return snapshot(true)}};
 function reset(){cubies.forEach(function(c){c.p=c.home.slice();c.m=I();c.el.style.transform=base(c)})}
 function view(){cubeEl.style.transform='rotateX('+rx+'deg) rotateY('+ry+'deg)'}
 function clearAlg(){list=[];listStr='';idx=0;inp.value='';errEl.textContent=''}
@@ -676,7 +694,7 @@ function setCase(c){
   current=c;
   caseEl.textContent='';
   var t=document.createElement('b'),g=document.createElement('span');
-  t.textContent=c?'Exercise: '+METHODS[c.m][0]+' \u00b7 '+METHODS[c.m][1][c.s][0].replace(/^\d+ /,'')+' \u00b7 '+(c.i<0?'Random':METHODS[c.m][1][c.s][1][c.i][1]):'Free mode';
+  t.textContent=c?'Exercise: '+METHODS[c.m][0]+' \u00b7 '+METHODS[c.m][1][c.s][0].replace(/^\d+ /,'')+' \u00b7 '+(c.i<0?'Random':METHODS[c.m][1][c.s][1][c.i][1]):'Practice \u00b7 '+METHODS[tab][0];
   g.textContent=c?'Goal: '+METHODS[c.m][1][c.s][3]:'Turn the cube any way you like, or pick an exercise below.';
   caseEl.appendChild(t);caseEl.appendChild(g);
   document.querySelectorAll('.rb-case,.rb-rand').forEach(function(b){b.classList.toggle('sel',!!c&&b._k===c.m+'/'+c.s+'/'+c.i)});
@@ -797,7 +815,9 @@ document.getElementById('rbExplain').addEventListener('click',function(){
     +'\nState (Kociemba facelet string, face order U R F D L B):\n'+st.facelets
     +'\nCenters: '+st.scheme
     +'\nAsked at: '+stamp();
-  if(typeof sendPrompt==='function'){sendPrompt(msg)}
+  var h=window.coachRubikHost;
+  if(h&&h.explain){var s=snapshot(true);s.message=msg;h.explain(s)}
+  else if(typeof sendPrompt==='function'){sendPrompt(msg)}
   else{errEl.textContent='Could not send to chat. Copy this instead: '+msg}
 });
 

@@ -1,0 +1,56 @@
+<title>Rubik Coach</title>
+<style>
+:root{--bg:#faf9f5;--bg-neutral:#f0eee6;--text-primary:#1f1e1d;--text-secondary:#6b6a66;--text-accent:#2c5fd9;--bg-accent:#e3ebfc;--border-accent:#2c5fd9;--text-success:#2f8a4f;--text-danger:#c2353b;--border:rgba(0,0,0,.1);--border-strong:rgba(0,0,0,.22);--radius:8px;--font-mono:ui-monospace,SFMono-Regular,Menlo,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1f1e1d;--bg-neutral:#2a2927;--text-primary:#eeede9;--text-secondary:#a3a19b;--text-accent:#86a8ff;--bg-accent:#1f2b45;--border-accent:#86a8ff;--text-success:#5ccf8d;--text-danger:#ff7b80;--border:rgba(255,255,255,.09);--border-strong:rgba(255,255,255,.22)}}
+:root[data-theme="dark"]{--bg:#1f1e1d;--bg-neutral:#2a2927;--text-primary:#eeede9;--text-secondary:#a3a19b;--text-accent:#86a8ff;--bg-accent:#1f2b45;--border-accent:#86a8ff;--text-success:#5ccf8d;--text-danger:#ff7b80;--border:rgba(255,255,255,.09);--border-strong:rgba(255,255,255,.22)}
+body{margin:0;background:var(--bg);color:var(--text-primary);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:640px;margin:0 auto;padding:16px}
+button{font:inherit;color:inherit;background:transparent;border:.5px solid var(--border-strong);border-radius:var(--radius);cursor:pointer}
+button:hover{background:var(--bg-neutral)}
+input{font:inherit;color:inherit;background:transparent;border:.5px solid var(--border-strong);border-radius:var(--radius);height:36px;padding:0 10px;box-sizing:border-box}
+#rbNote{font-size:13px;color:var(--text-secondary);margin:0 0 10px;min-height:1em}
+.sr-only{position:absolute;left:-9999px}
+.rbw .rb-status{margin-right:0} /* the chat widget keeps room for its menu button; an artifact has none */
+#rbExplain{display:none} /* Claude reads the saved state directly, so the learner just asks in the chat */
+</style>
+<main>
+<h1 class="sr-only">Rubik's cube coach</h1>
+<p id="rbNote"></p>
+<div id="coach-rubik" style="min-height:420px;font-size:14px;color:var(--text-secondary)">Loading the cube…</div>
+</main>
+<script>
+// Saves the cube state to the artifact database so Claude can read it, and plays moves Claude writes.
+// Documents: cube/state (written on every change), cube/command ({id, moves} from Claude).
+(function(){
+  var note=document.getElementById('rbNote');
+  var db=null,pending=null,writing=false,timer=null,lastCommand=null,stateReady=false;
+  function say(t){note.textContent=t}
+  async function flush(){
+    if(!db||!stateReady||writing||!pending)return;
+    writing=true;var s=pending;pending=null;
+    try{await db.doc('cube/state').set(Object.assign({},s,{lastCommand:lastCommand,updatedAt:new Date().toISOString()}))}
+    catch(e){say('Could not save the cube state, so Claude may see an older one.')}
+    writing=false;if(pending)flush();
+  }
+  window.coachRubikHost={
+    change:function(s){pending=s;clearTimeout(timer);timer=setTimeout(flush,500)}
+  };
+  if(!window.claude||!window.claude.use){say('Saving isn’t available here, so Claude can’t see this cube.');return}
+  var slow=setTimeout(function(){say('Can’t reach the saved state yet, so Claude may not see your moves.')},10000);
+  window.claude.use('db').then(async function(d){
+    if(!d){clearTimeout(slow);say('Sign in to save the cube, so Claude can see it.');return}
+    db=d;
+    try{var prev=await db.doc('cube/state').get();if(prev.exists)lastCommand=(prev.data()||{}).lastCommand||null}catch(e){}
+    clearTimeout(slow);say('');stateReady=true;
+    if(!pending&&window.coachRubik)pending=Object.assign({},window.coachRubik.snapshot(),{answer:''});
+    flush();
+    db.doc('cube/command').onSnapshot(function(snap){
+      var c=snap.exists?snap.data():null;
+      if(!c||!c.id||c.id===lastCommand||!c.moves)return;
+      lastCommand=c.id;
+      if(window.coachRubik&&window.coachRubik.play(String(c.moves)))say('Playing Claude’s moves: '+String(c.moves));
+    },function(){say('Lost the connection to Claude’s moves. Reopen the page to reconnect.')});
+  });
+})();
+</script>
+<script src="cube.js"></script>
