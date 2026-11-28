@@ -11,7 +11,9 @@ braces, or "-" when the stage needs no moves. The whole solution is applied
 to the input and checked before it is printed.
 
 Usage:
-  python3 solve.py FACELETS [--centers "U=white, R=red, ..."] [--cross white]
+  python3 solve.py FACELETS [--centers "U=white, R=red, ..."] [--cross white] [--method cfop|lbl] [--status]
+
+--method lbl solves with the Layer by Layer steps (7 stages) instead of CFOP.
 
 The cross is built on the face whose centre has the --cross colour (white by
 default). If that face is not already at the bottom, the Cross line starts
@@ -360,6 +362,141 @@ def solve_pll(state):
     return last_layer(state, PLL_ALGS, lambda s: tuple(s[i] for i in LL_IDS), solved)
 
 
+# ---------------------------------------------------------------- LBL (layer by layer)
+# The same steps and algorithms as reference/methods/lbl.md. Each slot's
+# corner trigger is "R U R' U'" seen from that slot (front-right uses R,
+# back-right B, back-left L, front-left F), so the cube never needs turning.
+
+LBL_CORNER_MACROS = AUF + ["R U R' U'", "B U B' U'", "L U L' U'", "F U F' U'"]
+LBL_EDGE_MACROS = AUF + [
+    "U R U' R' U' F' U F", "U B U' B' U' R' U R", "U L U' L' U' B' U B", "U F U' F' U' L' U L",
+    "U' L' U L U F U' F'", "U' F' U F U R U' R'", "U' R' U R U B U' B'", "U' B' U B U L U' L'",
+]
+LBL_YCROSS = ["F R U R' U' F'"]
+LBL_SUNE = ["R U R' U R U2 R'"]
+LBL_CORNER_CYCLE = ["R' F R' B2 R F' R' B2 R2"]
+LBL_EDGE_CYCLE = ["R U' R U R U R U' R' U' R2", "R2 U R U R' U' R' U' R' U R'"]
+_PIECE_TABLES = {}
+
+
+def corners_ok(s):
+    return cross_ok(s) and all(piece_ok(s, (sl[0], 1, sl[1])) for sl in SLOTS)
+
+
+def yellow_cross_ok(s):
+    u = center(s, "U")
+    return f2l_ok(s) and all(s[idx(p, NRM["U"])] == u for p in [(0, -1, 1), (1, -1, 0), (0, -1, -1), (-1, -1, 0)])
+
+
+def placed(s, pos):
+    want = sorted(center(s, f) for f, v in NRM.items() if any(v[k] != 0 and v[k] == pos[k] for k in range(3)))
+    return sorted(s[i] for i in stickers_at(pos)) == want
+
+
+def corners_placed_ok(s):
+    return oll_ok(s) and all(placed(s, (x, -1, z)) for x in (-1, 1) for z in (-1, 1))
+
+
+def insert_pieces(state, slots, key_fn, goal_fn, macros, keep_fn, max_depth=9):
+    """Put pieces into their slots one at a time, choosing the closest first.
+    key_fn(state, slot) -> sticker index of the tracked sticker; goal_fn(slot) -> its home index."""
+    dests = [seq_dest(m) for m in macros]
+    out = []
+    done = [sl for sl in slots if key_fn(state, sl) == goal_fn(sl) and keep_fn(state, [sl])]
+    while len(done) < len(slots):
+        best = None
+        for sl in slots:
+            if sl in done:
+                continue
+            tk = (id(macros), goal_fn(sl))
+            if tk not in _PIECE_TABLES:
+                _PIECE_TABLES[tk] = bfs_table((goal_fn(sl),), dests)
+            table = _PIECE_TABLES[tk]
+            start = (key_fn(state, sl),)
+
+            def dfs(s, key, g, bound, path, prev):
+                h = table[key]
+                if g + h > bound:
+                    return None
+                if h == 0 and keep_fn(s, done + [sl]):
+                    return path
+                for mi, m in enumerate(macros):
+                    if prev is not None and mi < 3 and prev < 3:
+                        continue  # merge U turns
+                    r = dfs(apply(s, m), (dests[mi][key[0]],), g + 1, bound, path + [mi], mi)
+                    if r is not None:
+                        return r
+                return None
+
+            sol = None
+            for bound in range(table[start], max_depth + 1):
+                sol = dfs(state, start, 0, bound, [], None)
+                if sol is not None:
+                    break
+            if sol is not None:
+                moves = [t for mi in sol for t in macros[mi].split()]
+                if best is None or len(moves) < len(best[1]):
+                    best = (sl, moves)
+        if best is None:
+            raise ValueError("could not insert a piece")
+        sl, moves = best
+        state = apply(state, " ".join(moves)) if moves else state
+        out += moves
+        done.append(sl)
+    return out
+
+
+def lbl_corner_key(s, sl):
+    d = center(s, "D")
+    return find_sticker(s, CORNER_POS, [d, center(s, SIDE[sl[0]]), center(s, FRONT[sl[1]])], d)
+
+
+def lbl_edge_key(s, sl):
+    cx = center(s, SIDE[sl[0]])
+    return find_sticker(s, EDGE_POS, [cx, center(s, FRONT[sl[1]])], cx)
+
+
+def solve_lbl_corners(state):
+    return insert_pieces(
+        state, SLOTS, lbl_corner_key, lambda sl: idx((sl[0], 1, sl[1]), NRM["D"]), LBL_CORNER_MACROS,
+        lambda s, sls: cross_ok(s) and all(piece_ok(s, (q[0], 1, q[1])) for q in sls))
+
+
+def solve_lbl_edges(state):
+    return insert_pieces(
+        state, SLOTS, lbl_edge_key, lambda sl: idx((sl[0], 0, sl[1]), NRM[SIDE[sl[0]]]), LBL_EDGE_MACROS,
+        lambda s, sls: corners_ok(s) and all(piece_ok(s, (q[0], 0, q[1])) for q in sls), max_depth=6)
+
+
+def solve_lbl_ycross(state):
+    u = center(state, "U")
+    return last_layer(state, LBL_YCROSS, lambda s: tuple(s[i] == u for i in LL_IDS), yellow_cross_ok)
+
+
+def solve_lbl_yface(state):
+    u = center(state, "U")
+    return last_layer(state, LBL_SUNE, lambda s: tuple(s[i] == u for i in LL_IDS), oll_ok)
+
+
+def solve_lbl_ycorners(state):
+    return last_layer(state, LBL_CORNER_CYCLE, lambda s: tuple(s[i] for i in LL_IDS), corners_placed_ok)
+
+
+def solve_lbl_yedges(state):
+    return last_layer(state, LBL_EDGE_CYCLE, lambda s: tuple(s[i] for i in LL_IDS), solved)
+
+
+METHODS = {
+    "cfop": [("Cross", solve_cross, cross_ok), ("F2L", solve_f2l, f2l_ok),
+             ("OLL", solve_oll, oll_ok), ("PLL", solve_pll, solved)],
+    "lbl": [("White cross", solve_cross, cross_ok), ("White corners", solve_lbl_corners, corners_ok),
+            ("Middle edges", solve_lbl_edges, f2l_ok), ("Yellow cross", solve_lbl_ycross, yellow_cross_ok),
+            ("Yellow face", solve_lbl_yface, oll_ok), ("Yellow corners", solve_lbl_ycorners, corners_placed_ok),
+            ("Yellow edges", solve_lbl_yedges, solved)],
+}
+METHOD_TITLE = {"cfop": "CFOP method:", "lbl": "LBL method:"}
+
+
 # ---------------------------------------------------------------- output
 
 def simplify(moves):
@@ -389,9 +526,10 @@ def check_input(s):
         raise ValueError("each centre must carry its own face letter")
 
 
-def solve(state, cross_letter):
+def solve(state, cross_letter, method="cfop"):
+    plan = METHODS[method]
     if solved(state):
-        return [(n, []) for n in ("Cross", "F2L", "OLL", "PLL")]
+        return [(n, []) for n, _, _ in plan]
     rotation = []
     for r in ["", "x", "x'", "x2", "z", "z'"]:
         if center(apply(state, r), "D") == cross_letter:
@@ -399,8 +537,7 @@ def solve(state, cross_letter):
             state = apply(state, r)
             break
     stages = []
-    for name, fn, ok in [("Cross", solve_cross, cross_ok), ("F2L", solve_f2l, f2l_ok),
-                         ("OLL", solve_oll, oll_ok), ("PLL", solve_pll, solved)]:
+    for name, fn, ok in plan:
         moves = fn(state)
         if moves is None:
             raise ValueError("%s could not be solved; the state may not be reachable on a real cube" % name)
@@ -409,8 +546,38 @@ def solve(state, cross_letter):
         if not ok(state):
             raise AssertionError("%s check failed" % name)
         stages.append((name, moves))
-    stages[0] = ("Cross", rotation + stages[0][1])
+    stages[0] = (stages[0][0], rotation + stages[0][1])
     return stages
+
+
+def status(state, cross_letter):
+    """Progress through the LBL and CFOP stages, as (label, done) pairs."""
+    rotation = ""
+    for r in ["", "x", "x'", "x2", "z", "z'"]:
+        if center(apply(state, r), "D") == cross_letter:
+            rotation = r
+            state = apply(state, r)
+            break
+    u = center(state, "U")
+    top_edges = [(0, -1, 1), (1, -1, 0), (0, -1, -1), (-1, -1, 0)]
+    top_corners = [(x, -1, z) for x in (-1, 1) for z in (-1, 1)]
+
+    def placed(pos):
+        want = sorted(center(state, f) for f, v in NRM.items() if any(v[k] != 0 and v[k] == pos[k] for k in range(3)))
+        return sorted(state[i] for i in stickers_at(pos)) == want
+
+    pairs = sum(slot_ok(state, sl) for sl in SLOTS)
+    corners_d = all(piece_ok(state, (sl[0], 1, sl[1])) for sl in SLOTS)
+    rows = [
+        ("White cross", cross_ok(state)),
+        ("First layer (LBL step 2)", cross_ok(state) and corners_d),
+        ("First two layers (LBL step 3, CFOP F2L, %d of 4 pairs)" % pairs, f2l_ok(state)),
+        ("Yellow cross (LBL step 4, OLL look 1)", f2l_ok(state) and all(state[idx(p, NRM["U"])] == u for p in top_edges)),
+        ("Yellow face (LBL step 5, OLL)", oll_ok(state)),
+        ("Yellow corners in place (LBL step 6, PLL look 1)", oll_ok(state) and all(placed(p) for p in top_corners)),
+        ("Solved", solved(state)),
+    ]
+    return rotation, rows
 
 
 def main():
@@ -418,6 +585,8 @@ def main():
     ap.add_argument("facelets")
     ap.add_argument("--centers", default="", help='e.g. "U=white, R=red, F=green, D=yellow, L=orange, B=blue"')
     ap.add_argument("--cross", default="white", help="colour to build the cross on (default white)")
+    ap.add_argument("--method", default="cfop", choices=["cfop", "lbl"], help="solving method (default cfop)")
+    ap.add_argument("--status", action="store_true", help="print which LBL/CFOP stages are done instead of a solution")
     a = ap.parse_args()
     state = a.facelets.strip().upper()
     try:
@@ -431,7 +600,13 @@ def main():
             if a.cross.lower() not in names:
                 raise ValueError("no centre has colour %s" % a.cross)
             letter = names[a.cross.lower()]
-        stages = solve(state, letter)
+        if a.status:
+            rotation, rows = status(state, letter)
+            print("Stage status (cross colour on the bottom%s):" % (" after " + rotation if rotation else ""))
+            for label, done in rows:
+                print("%s: %s" % (label, "done" if done else "not done"))
+            return
+        stages = solve(state, letter, a.method)
         # Re-check the whole solution from the original input.
         allmoves = " ".join(m for _, ms in stages for m in ms)
         if not solved(apply(state, allmoves)):
@@ -439,7 +614,7 @@ def main():
     except (ValueError, AssertionError) as e:
         print("error: %s" % e, file=sys.stderr)
         sys.exit(1)
-    print("CFOP method:")
+    print(METHOD_TITLE[a.method])
     for name, ms in stages:
         print("%s: %s" % (name, fmt(ms)))
 

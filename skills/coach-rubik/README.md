@@ -1,15 +1,17 @@
 # coach-rubik
 
-Learn to solve a 3x3 Rubik's cube with an interactive 3D cube in the chat. Turn the cube yourself, load sample CFOP cases, and press **Ask coach** to get the moves for each stage of the CFOP method (Cross, F2L, OLL, PLL) for the state you are looking at.
+Learn to solve a 3x3 Rubik's cube from zero, with a coach and a 3D cube in the chat. Claude teaches the basics (pieces, notation, how solving works), then a method step by step: **Layer by Layer** for beginners, **CFOP** for going faster. Each step has practice cases you load onto the cube, try, and send back to the coach for feedback.
 
 ## Use it
 
-**Type `/coach-rubik` to open the cube.**
+**Type `/coach-rubik` to start a lesson.**
 
-- Drag a layer to turn it; drag outside the cube to change the view.
-- Use the move pad for single turns, Scramble for a random state, and Reset to start over.
-- Cross, F2L, and OLL show what each stage achieves: the cube jumps to the state right after that stage (for Cross, the white cross with matching side edges). Play rewinds to the start of the stage and runs its algorithm; Step runs it one move at a time.
-- **Ask coach** sends the current state to Claude to get help solving it. Claude replies like this:
+- Tell Claude whether you have solved a cube before; it picks the method and starts teaching.
+- On the cube: drag a layer to turn it, drag a centre label to rotate the whole cube, drag outside the cube to change the view. Scramble and Reset are the icons in the bottom-left corner.
+- The **LBL** and **CFOP** tabs list each step's exercises, plus a shuffle button for a random exercise of that step. Click one to set it up on the cube and try to solve it.
+- **Answer** (light bulb, bottom-right of the cube) shows the moves, solved with the method of the tab you are on; **Explain** (speech bubble) asks Claude why those moves work, which is where the coaching happens.
+- Type moves in the input and press Play to watch them. The History row has back and forward buttons to replay your moves one at a time.
+- Ask "just solve it" and Claude replies with the moves for each CFOP stage:
 
   ```
   CFOP method:
@@ -19,10 +21,8 @@ Learn to solve a 3x3 Rubik's cube with an interactive 3D cube in the chat. Turn 
   PLL: -
   ```
 
-  A `-` means that stage needs no moves.
+## How it checks your cube
 
-## How it solves
+[`scripts/solve.py`](scripts/solve.py) reads the cube state, reports which stages are done (`--status`), and solves any state with CFOP or, with `--method lbl`, Layer by Layer. [`scripts/solve.js`](scripts/solve.js) is the same solver in JavaScript and gives identical answers. Every solution is applied to the state and checked before it is shown.
 
-The solution comes from [`scripts/solve.py`](scripts/solve.py), a small CFOP solver in plain Python. It builds the white cross at the bottom, inserts the four F2L pairs, then orients and permutes the last layer from a set of standard algorithms. Every solution is applied to the state and checked before it is shown. Solutions follow the CFOP stages rather than being the shortest possible.
-
-The solver runs in Claude's code execution, so code execution must be turned on (it already is if skills work for you).
+The checks run in Claude's code execution, so it must be turned on (it already is if skills work for you).

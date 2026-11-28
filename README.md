@@ -8,7 +8,7 @@ Claude skills that coach you as you learn: practise, get feedback, improve. Smal
 |---|---|---|
 | [`coach-writing`](./skills/coach-writing) | `/coach-writing` | Corrects your English writing like a teacher with a red pen: wrong words are struck through with the fix written above, missing words get a ∧ caret, unclear sentences are crossed out and rewritten. Optional blue suggestions upgrade basic vocabulary, sentence structure, and cohesion. Includes a button to copy the clean version. |
 | [`coach-writing-ielts`](./skills/coach-writing-ielts) | `/coach-writing-ielts` | Corrects an IELTS Writing essay like an IELTS teacher: besides grammar, it replaces everyday words with academic ones, rewrites awkward phrases, and crosses out examples that overlap or don't follow logically. Ends with a band estimate for each of the four IELTS criteria. |
-| [`coach-rubik`](./skills/coach-rubik) | `/coach-rubik` | An interactive 3D Rubik's cube in the chat: turn it, load sample CFOP cases, and press Ask coach to get the moves for each CFOP stage (Cross, F2L, OLL, PLL) for the current state. Needs code execution, which runs the solver. |
+| [`coach-rubik`](./skills/coach-rubik) | `/coach-rubik` | A Rubik's cube coach: teaches from zero (pieces, notation, principles) to solving with Layer by Layer, then CFOP, using a 3D cube in the chat with practice cases for every step and feedback on your attempts. Needs code execution, which checks your cube. |
 
 More skills may be added over time. Each one lives in its own folder under `skills/` with its own `SKILL.md`.
 
